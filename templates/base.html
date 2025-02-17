@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Haven</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --secondary: #f5f5f5;
+            --text-dark: #212121;
+            --text-light: #ffffff;
+            --danger: #d32f2f;
+            --card-bg: rgba(255, 255, 255, 0.62);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            background: url('https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?cs=srgb&dl=pexels-chevanon-1108099.jpg&fm=jpg') no-repeat center center/cover;
+            color: var(--text-dark);
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .navbar {
+            background-color: var(--card-bg);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .nav-left {
+            display: flex; /* Use flexbox for the left section */
+            justify-content: center; /* Center the items */
+            flex-grow: 1; /* Allow this section to grow */
+            list-style: none; /* Remove bullet points */
+            padding: 0; /* Remove padding */
+            margin: 0; /* Remove margin */
+        }
+        
+        .nav-left li {
+            margin: 0 1rem; /* Add space between items */
+        }
+        
+        .nav-right {
+            list-style: none; /* Remove bullet points */
+            padding: 0; /* Remove padding */
+            margin: 0; /* Remove margin */
+            display: flex; /* Use flexbox for the right section */
+        }
+        
+        .nav-right li {
+            margin-left: 1rem; /* Add space between login and register */
+        }
+
+        .notification-button, .cart-button {
+            background: none; /* No background */
+            border: none; /* No border */
+            cursor: pointer; /* Pointer cursor */
+            position: relative; /* For positioning the count */
+        }
+        
+        .notification-count, .cart-count {
+            position: absolute;
+            top: -5px; /* Adjust as needed */
+            right: -10px; /* Adjust as needed */
+            background-color: red; /* Background color for count */
+            color: white; /* Text color for count */
+            border-radius: 50%; /* Make it circular */
+            padding: 2px 5px; /* Padding for the count */
+            font-size: 12px; /* Font size for the count */
+        }
+
+        /*.navbar ul {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            list-style: none;
+            padding: 0 1rem;
+        }*/
+
+        .navbar a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .navbar a:hover {
+            background-color: var(--primary);
+            color: var(--text-light);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .info-table th, .info-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        
+        .info-table th {
+            background-color: var(--primary-light);
+            color: var(--text-light);
+        }
+        
+        .info-table td {
+            color: var(--text-dark);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+
+        .edit-button {
+            margin-top: 20px;
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary);
+            color: var(--text-light);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .edit-button:hover {
+            background-color: var(--primary-light);
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            background-color: var(--primary);
+            padding-top: 60px;
+            transition: 0.3s;
+            box-shadow: var(--shadow);
+            z-index: 1001;
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: var(--text-light);
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--primary-light);
+        }
+
+        .flash-messages {
+            margin: 20px 0;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .profile-picture {
+            width: 150px; /* Adjust width */
+            height: 150px; /* Adjust height */
+            border-radius: 3% ; /* Ensure it is square */
+            object-fit: cover; /* Ensure the image covers the area */
+            border: 1.5px solid var(--primary);
+        }
+
+
+        /* Sidebar toggle button */
+        .open-sidebar-btn {
+            font-size: 27px;
+            color: var(--primary);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            position: fixed;
+            top: 0px;
+            left: 20px; /* Adjusted to avoid overlap */
+            z-index: 1002;
+        }
+
+        .close-sidebar-btn {
+            font-size: 30px;
+            color: var(--text-light);
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .container {
+            margin: 7rem auto 2rem;
+            padding: 0 1rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .user-desc {
+            font-size: 1.25rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background-color: var(--text-light);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .feature-content {
+            padding: 1.5rem;
+        }
+
+        .feature-content h3 {
+            color: var(--primary);
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-content p {
+            color: var(--text-dark);
+            margin-bottom: 1.25rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--text-light);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: var(--text-light);
+        }
+
+        .btn-danger:hover {
+            background-color: #e53935;
+        }
+
+        .logout-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .toggle-button {
+            display: inline-block;
+            padding: 10px 20px; /* Padding for the button */
+            background-color: #155724; /* Button background color */
+            color: white; /* Text color */
+            text-align: center; /* Center the text */
+            border-radius: 25px; /* Rounded corners */
+            text-decoration: none; /* Remove underline */
+            transition: background-color 0.3s, transform 0.2s; /* Smooth transition */
+            font-weight: bold; /* Bold text */
+        }
+    
+        .toggle-button:hover {
+            background-color: #155724; /* Darker background on hover */
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+    
+        .toggle-button:active {
+            transform: scale(0.95); /* Slightly shrink on click */
+        }
+
+        .metrics {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            flex: 1;
+            margin: 0 1rem;
+        }
+
+        .metric h3 {
+            color: var(--primary);
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric p {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .trainer-review-section {
+            text-align: center;
+            margin-top: 2rem;
+            background-color: var(--card-bg);
+            padding: 1rem;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .trainer-review-section h3 {
+            text-align: center;
+            font-size: 1.75rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .trainer-review-section p {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .trainer-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .trainer-buttons .btn {
+            padding: 0.75rem 1.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .navbar ul {
+                flex-direction: column;
+                padding: 0;
+                gap: 1rem;
+            }
+
+            .navbar a {
+                font-size: 1rem;
+                padding: 0.5rem 1rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .user-desc {
+                font-size: 1.1rem;
+            }
+
+            .open-sidebar-btn {
+                left: 10px; /* Adjust for mobile */
+                top: 15px;  /* Adjust for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    {% if current_user.is_authenticated %}
+    <div class="sidebar" id="sidebar">
+        <button class="close-sidebar-btn" onclick="toggleSidebar()">×</button>
+        
+        {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="#">Task 7</a>
+            <a href="#">Task 8</a>
+            <a href="#">Task 9</a>
+            <a href="#">Task 10</a>
+        
+        {% elif current_user.role == 'trainer' %}
+            <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="#">Task 4</a>
+            <a href="#">Task 5</a>
+        
+        {% elif current_user.role == 'customer' %}
+            <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="#">Task 2</a>
+        
+        {% else %}
+            <p>No tasks available for your role.</p>
+        {% endif %}
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button class="open-sidebar-btn" onclick="toggleSidebar()">☰</button>
+    {% endif %}
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <ul class="nav-left">
+            <!--<li><a href="#"><img src="/static/images/logo.png" alt="Pet Haven Logo" width="35" height="35" /></a></li>
+            <li><a href="{{ url_for('home') }}" aria-label="Go to home page">Pet Haven</a></li>-->
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <ul class="nav-right">
+            {% if current_user.is_authenticated %}
+            <li class="notification-item">
+                <button type="button" title="Notifications" class="notification-button">
+                    <i class="fas fa-bell"></i> <!-- Font Awesome bell icon -->
+                    <span class="notification-count">0</span> <!-- Static count for notifications -->
+                </button>
+            </li>
+            <li class="cart-item">
+                <button type="button" title="Cart" class="cart-button">
+                    <i class="fas fa-shopping-cart"></i> <!-- Font Awesome shopping cart icon -->
+                    <span class="cart-count">0</span> <!-- Static count for cart items -->
+                </button>
+            </li>
+                <li class="logout-item"><a href="{{ url_for('logout') }}">Logout</a></li> <!-- Logout Link -->
+            {% else %}
+                <li class="login-item"><a href="{{ url_for('login') }}">Login</a></li> <!-- Login Link -->
+                <li class="register-item"><a href="{{ url_for('register') }}">Register</a></li> <!-- Register Link -->
+            {% endif %}
+        </ul>
+    </header>
+
+
+        {% block content %}
+        
+        {% endblock %}
+    
+
+
+    <!-- Sidebar Scripts -->
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.style.left === '0px') {
+                sidebar.style.left = '-250px';
+            } else {
+                sidebar.style.left = '0';
+            }
+        }
+    </script>
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+</body>
+</html>

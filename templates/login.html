@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="card">
+        <h2>Welcome</h2>
+        <div class="tabs">
+            <button class="active" onclick="location.reload()">LOGIN</button>
+            <button onclick="location.href='{{ url_for('register') }}'">REGISTER</button>
+
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="form-group">
+                <label for="role">Select Role</label>
+                <select id="role" name="role" required>
+                    <option value="customer">Customer</option>
+                    <option value="trainer">Trainer</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="" required>
+            </div>
+            <div class="container">
+                <div class="form-group remember-forgot">
+                    <div class="remember-me-checkbox">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <div class="forgot-password">
+                        <a href="{{ url_for('forgot_password') }}">Forgot password?</a>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="submit">Login</button>
+        </form>
+        <div class="footer">
+            Protected by reCAPTCHA and subject to the Privacy Policy and Terms of Service
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

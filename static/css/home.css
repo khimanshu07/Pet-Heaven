@@ -1,0 +1,50 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f8f9fa; /* Light background color */
+}
+
+.header {
+  background-color: #343a40; /* Dark gray background */
+}
+
+.header a {
+  text-decoration: none;
+}
+
+.nav .nav-item .nav-link {
+  font-size: 16px;
+  margin-left: 15px;
+}
+
+.main {
+  background: url('https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?cs=srgb&dl=pexels-chevanon-1108099.jpg&fm=jpg') no-repeat center center/cover;
+  color: white;
+  min-height: calc(100vh - 130px); /* Full height minus header and footer */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.main .heading {
+  font-size: 3.5rem;
+}
+
+.main .text {
+  color: #e8ab27;
+  font-size: 1.3rem;
+  max-width: 800px;
+  line-height: 1.6;
+}
+
+.footer {
+  background-color: #343a40; /* Dark gray background */
+  color: white;
+  font-size: 14px;
+}
+
+

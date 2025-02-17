@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="container">
+    <div class="card">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('edit_profile', user_id=user.id) }}" enctype="multipart/form-data">
+        <div class="profile-header">
+            <h2>Edit Profile</h2>
+            <img id="profile-picture" 
+                 src="{{ url_for('static', filename=user.profile_picture) if user.profile_picture else url_for('static', filename='images/default_avatar.png') }}" 
+                 alt="Profile Picture" 
+                    class="profile-picture">
+            <button class="edit-button" type="button" id="upload-button" aria-label="Upload new profile picture">Upload new image</button>
+            <input type="file" id="file-input" name="profile_picture" accept="image/*" style="display: none;" aria-describedby="file-upload-help"> <!-- Keep this hidden -->
+            <div id="file-upload-help" class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+    
+        </div>
+        
+        <table class="info-table">
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td><input type="text" name="name" placeholder="Enter your name" value="{{ user.name }}" required></td>
+            </tr>
+            <tr>
+                <th>Email Address</th>
+                <td><input type="email" name="email" placeholder="Enter your email address" value="{{ user.email }}" disabled></td>
+            </tr>
+            <tr>
+                <th>Mobile Number</th>
+                <td><input type="text" name="mobile_number" placeholder="Enter your mobile number" value="{{ user.mobile_number }}" required></td>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <td>{{ user.role }}</td> <!-- Display the current role without allowing changes -->
+            </tr>
+            <tr>
+                <th>Created At</th>
+                <td><input type="text" name="created_at" value="{{ user.created_at.strftime('%Y-%m-%d %H:%M:%S') }}" disabled></td>
+            </tr>
+            {% if user.role == 'trainer' %}
+            <tr>
+                <th>Certifications</th>
+                <td>
+                    <div id="certifications-container">
+                        {% for certification in certifications %}
+                        <div class="certification-box">
+                            <input type="text" name="certifications[]" placeholder="Enter certification name" value="{{ certification.name }}" required>
+                            <input type="file" name="certification_images[]" accept="image/*">
+                            {% if certification.image_path %}
+                                <a href="{{ url_for('static', filename=certification.image_path) }}" target="_blank">View Certification Image</a>
+                            {% endif %}
+                            <!-- Hidden checkbox for marking removal -->
+                            <input type="checkbox" name="remove_certification_{{ certification.id }}" value="1" class="remove-certification-checkbox" style="display: none;">
+                            <button type="button" class="remove-certification" onclick="removeCertification(this, {{ certification.id }})">Remove</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" id="add-certification-button">+ Add Certification</button>
+                </td>
+            </tr>
+            <tr>
+                <th>Services Offered</th>
+                <td>
+                    <div id="services-container">
+                        {% for trainer in user.trainers %}
+                            {% for trainer_service in trainer.trainer_services %}
+                                <div class="service-price-box">
+                                    <select name="services[]">
+                                        <option value="">Select service</option>
+                                        {% for service in services %}
+                                            <option value="{{ service.id }}" {% if service.id == trainer_service.service_id %}selected{% endif %}>{{ service.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="number" name="prices[]" placeholder="Enter price" value="{{ trainer_service.price }}" step="0.01" required>
+                                    <button type="button" class="remove-service" onclick="removeService(this)">Remove</button>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    <button type="button" id="add-service-button">+ Add Service</button>
+                </td>
+            </tr>
+            <tr>
+                <th>Experience (years)</th>
+                <td><input type="number" name="experience" placeholder="Enter years of experience" value="{{ trainer.experience if trainer.experience is not none else '' }}" required></td>
+            </tr>
+            <tr>
+                <th>Specialization</th>
+                <td><input type="text" name="specialization" placeholder="Enter specialization" value="{{ trainer.specialization if trainer.specialization is not none else '' }}" required></td>
+            </tr>
+            <tr>
+                <th>Availability Schedule</th>
+                <td><textarea name="availability_schedule" placeholder="Enter availability schedule as JSON">{{ trainer.availability_schedule if trainer.availability_schedule is not none else '' }}</textarea></td>
+            </tr>
+            <tr>
+                <th>Location</th>
+                <td><input type="text" name="location" placeholder="Enter location" value="{{ trainer.location if trainer.location is not none else '' }}" required></td>
+            </tr>
+            <tr>
+                <th>Bio</th>
+                <td><textarea name="bio" placeholder="Enter a short biography">{{ trainer.bio if trainer.bio is not none else '' }}</textarea></td>
+            </tr>
+                <th>Government ID</th>
+                <td>
+                    <select id="government-id-select">
+                        <option value="">Select Government ID</option>
+                        <option value="aadhaar">Aadhaar</option>
+                        <option value="pan">PAN Card</option>
+                    </select>
+                    
+                    <div id="aadhaar-upload" class="id-upload" style="display: none;">
+                        <input type="file" name="aadhaar_image" accept="image/*">
+                        {% if user.aadhaar_image_path %}
+                            <img src="{{ url_for('static', filename=user.aadhaar_image_path) }}" alt="Aadhaar Image" class="preview-image">
+                        {% endif %}
+                    </div>
+                    
+                    <div id="pan-upload" class="id-upload" style="display: none;">
+                        <input type="file" name="pan_card_image" accept="image/*">
+                        {% if user.pan_card_image_path %}
+                            <img src="{{ url_for('static', filename=user.pan_card_image_path) }}" alt="PAN Card Image" class="preview-image">
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% endif %}
+        </table>
+        <button class="edit-button" type="submit">Save changes</button>
+    </form>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadButton = document.getElementById('upload-button');
+        const fileInput = document.getElementById('file-input');
+        const profilePicture = document.getElementById('profile-picture');
+        
+        uploadButton.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Validate file size
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    this.value = '';
+                    return;
+                }
+        
+                // Validate file type
+                if (!['image/jpeg', 'image/png'].includes(file.type)) {
+                    alert('Only JPG and PNG files are allowed');
+                    this.value = '';
+                    return;
+                }
+        
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = e => profilePicture.src = e.target.result;
+                reader.readAsDataURL(file);
+            }
+        });
+    
+        // Add new certification field dynamically
+        document.getElementById('add-certification-button').addEventListener('click', function() {
+            const container = document.getElementById('certifications-container');
+            const newCertificationBox = document.createElement('div');
+            newCertificationBox.classList.add('certification-box');
+            newCertificationBox.innerHTML = `
+                <input type="text" name="certifications[]" placeholder="Enter certification name" required>
+                <input type="file" name="certification_images[]" accept="image/*">
+                <button type="button" class="remove-certification">Remove</button>
+            `;
+            container.appendChild(newCertificationBox);
+            
+            // Attach remove event listener dynamically
+            newCertificationBox.querySelector('.remove-certification').addEventListener('click', function() {
+                newCertificationBox.remove();
+            });
+        });
+
+        // Certification removal
+        function removeCertification(button, certificationId) {
+            if (certificationId) {
+                const checkbox = document.querySelector(`input[name="remove_certification_${certificationId}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;  // Mark it for removal
+                }
+            } else {
+                // Dynamically created certification fields
+                button.parentElement.remove();
+            }
+        }
+
+        // Add new service field dynamically
+        document.getElementById('add-service-button').addEventListener('click', function() {
+            const container = document.getElementById('services-container');
+            const newServicePriceBox = document.createElement('div');
+            newServicePriceBox.classList.add('service-price-box');
+            newServicePriceBox.innerHTML = `
+                <select name="services[]">
+                    <option value="">Select service</option>
+                    {% for service in services %}
+                        <option value="{{ service.id }}">{{ service.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="prices[]" placeholder="Enter price" step="0.01" required>
+                <button type="button" class="remove-service">Remove</button>
+            `;
+            container.appendChild(newServicePriceBox);
+            
+            // Attach remove event listener dynamically
+            newServicePriceBox.querySelector('.remove-service').addEventListener('click', function() {
+                newServicePriceBox.remove();
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const governmentIdSelect = document.getElementById('government-id-select');
+        const aadhaarUpload = document.getElementById('aadhaar-upload');
+        const panUpload = document.getElementById('pan-upload');
+    
+        governmentIdSelect.addEventListener('change', function() {
+            // Hide both upload sections initially
+            aadhaarUpload.style.display = 'none';
+            panUpload.style.display = 'none';
+    
+            // Show the relevant upload section based on selection
+            if (this.value === 'aadhaar') {
+                aadhaarUpload.style.display = 'block';
+            } else if (this.value === 'pan') {
+                panUpload.style.display = 'block';
+            }
+        });
+    });
+</script>
+
+
+{% endblock %}

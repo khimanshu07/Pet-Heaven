@@ -1,0 +1,68 @@
+body {
+  font-family: Arial, sans-serif;
+  background: url('https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?cs=srgb&dl=pexels-chevanon-1108099.jpg&fm=jpg') no-repeat center center/cover;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  overflow: hidden;
+}
+
+.container {
+  background: #effcdfb5;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 300px;
+}
+
+h2 {
+  color: #333333;
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #555555;
+}
+
+input[type="text"] {
+  width: calc(100% - 20px); /* Adjusting width for padding */
+  padding: 10px;
+  margin: 0 auto 20px; /* Center the input and add space below */
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  font-size: 16px;
+  display: block;
+}
+
+button {
+  background-color: #0f7e0d;
+  color: #ffffff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #0f7e0da0;
+}
+
+#countdown {
+  margin-top: 10px;
+  color: gray;
+}
+
+#resendLink {
+  color: blue;
+  text-decoration: none;
+  pointer-events: none;
+  cursor: default;
+}

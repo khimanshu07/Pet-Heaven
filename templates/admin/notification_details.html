@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Details</title>
+</head>
+<body>
+    <h1>Notification Details</h1>
+    <p><strong>Message:</strong> {{ notification.message }}</p>
+    <p><strong>Created At:</strong> {{ notification.created_at }}</p>
+    
+    <h2>Registration Details</h2>
+    <ul>
+        <li><strong>Name:</strong> {{ registration_details.name }}</li>
+        <li><strong>Email:</strong> {{ registration_details.email }}</li>
+        <li><strong>Mobile:</strong> {{ registration_details.mobile }}</li>
+        <li><strong>Role:</strong> {{ registration_details.role }}</li>
+    </ul>
+
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

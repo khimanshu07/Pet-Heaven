@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Haven Dashboard</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --secondary: #f5f5f5;
+            --text-dark: #212121;
+            --text-light: #ffffff;
+            --danger: #d32f2f;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --shadow: 0.5rem 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --black: #000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+        }
+
+        .navbar {
+            background-color: var(--card-bg);
+            padding: 0.8rem 1rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar ul {
+            display: flex;
+            gap: 1.2rem;
+            list-style: none;
+            padding: 0;
+        }
+
+        .navbar a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .navbar a:hover {
+            background-color: var(--primary);
+            color: var(--text-light);
+        }
+
+        .notification-icon {
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--primary);
+            position: relative;
+            padding: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .notification-icon:hover {
+            background-color: #f4f4f4;
+            border-radius: 50%;
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: var(--text-light);
+            border-radius: 50%;
+            padding: 5px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .notifications-panel {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            width: 300px;
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+            padding: 1rem;
+            border-radius: 8px;
+            max-height: 350px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1100;
+        }
+
+        .notifications-panel h4 {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .notification-item {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+            transition: background-color 0.3s ease; 
+            display: flex; /* Use flexbox for better alignment */
+            justify-content: space-between; /* Space between message and timestamp */
+            align-items: center; /* Center items vertically */
+        }
+
+        .notification-item.unread {
+            background-color: #e8f5e9; 
+             
+        }
+        
+        .notification-item.read {
+            background-color: #f9f9f9; 
+        }
+
+        .notification-item a {
+            text-decoration: none; /* Remove underline from links */
+            color: var(--text-dark); /* Use dark text color */
+            flex-grow: 1; /* Allow the link to take up available space */
+        }
+        
+        .notification-item a:hover {
+            color: var(--primary); /* Change color on hover */
+        }
+
+        .notification-item:hover {
+            background-color: #e8f5e9;
+        }
+
+        .notification-item p {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--text-dark);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 80px;
+            left: -250px;
+            bottom: 0;
+            width: 250px;
+            background-color: var(--primary);
+            color: var(--text-light);
+            padding-top: 2rem;
+            transition: left 0.3s ease-in-out;
+            z-index: 1000;
+        }
+
+        .sidebar a {
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 1rem;
+            display: block;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .sidebar a:hover {
+            background-color: #388e3c;
+        }
+
+        .sidebar .close-btn {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 1200px;
+            margin: 7rem auto 2rem;
+            padding: 0 1rem;
+            margin-left: 0;
+            flex-grow: 1;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        .hamburger {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            width: 30px;
+            height: 25px;
+            justify-content: space-between;
+            margin-left: 1rem;
+        }
+
+        .hamburger div {
+            height: 5px;
+            background-color: var(--black);
+            border-radius: 5px;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .user-desc {            
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .features {
+            text-align: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            background-color: var(--text-light);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            text-align: center;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .feature-content {
+            padding: 1.5rem;
+        }
+
+        .feature-content h3 {
+            color: var(--primary);
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-content p {
+            color: var(--text-dark);
+            margin-bottom: 1.25rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--text-light);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: var(--text-light);
+        }
+
+        .btn-danger:hover {
+            background-color: #e53935;
+        }
+
+        .logout-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .trainer-review-section {
+            text-align: center;
+            margin-top: 2rem;
+            background-color: var(--card-bg);
+            padding: 1rem;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .trainer-review-section h3 {
+            text-align: center;
+            font-size: 1.75rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .trainer-review-section p {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .trainer-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .trainer-buttons .btn {
+            padding: 0.75rem 1.25rem;
+        }
+
+        .metrics {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            flex: 1;
+            margin: 0 1rem;
+        }
+
+        .metric h3 {
+            color: var(--primary);
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric p {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .navbar ul {
+                padding: 0 0.5rem;
+                gap: 0.75rem;
+            }
+
+            .navbar a {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.85rem;
+            }
+
+            h2 {
+                font-size: 2.2rem;
+            }
+
+            .user-desc {
+                font-size: 1.1rem;
+            }
+
+            .metrics {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .metric {
+                margin: 1rem 0;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="hamburger" onclick="toggleSidebar()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <ul>
+            {% if user.role == 'admin' %}
+            <li><a href="#">Add Admin</a></li>
+            <li><a href="#">Add Dog</a></li>
+            <li><a href="#">Add Service</a></li>
+            <li><a href="#">Add Trainer</a></li>
+            <li><a href="#">Add Competitions</a></li>
+            <li><a href="#">Manage Profile</a></li>
+            {% endif %}
+        </ul>
+        {% if user.role == 'admin' %}
+        <span class="notification-icon" id="notificationIcon">
+            🔔
+            <span class="notification-count">{{ unread_count }}</span>  <!-- Display unread count -->
+        </span>
+        {% endif %}
+    </header>
+    {% if user.role == 'admin' %}
+    <div class="notifications-panel" id="notificationsPanel">
+        <h4>Recent Notifications</h4>
+        {% if notifications %}
+            <ul id="notificationList">
+                {% for notification in notifications %}
+                    <li class="notification-item {% if not notification.read %}unread{% endif %}">
+                        <a href="{{ url_for('notification_details', notification_id=notification.id) }}">
+                            {{ notification.message }} <small>({{ notification.created_at.strftime('%Y-%m-%d %H:%M:%S') }})</small>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% if notifications|length > 3 %}
+                <p style="text-align: center; color: gray;">
+                    <a href="#" id="loadMoreNotifications" style="text-decoration: underline; cursor: pointer;">
+                        Show more...
+                    </a>
+                </p>
+            {% endif %}
+        {% else %}
+            <p>No notifications.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+    <div class="sidebar" id="sidebar">
+        <!--  <div class="close-btn" onclick="toggleSidebar()">&times;</div> -->
+        <a href="#">Profile</a>
+        {% if user.role == 'admin' %}
+            <a href="{{ url_for('user_search') }}">Service Providers</a>
+            <a href="#">Notifications</a>
+            <a href="#">Documents Review</a>
+        {% elif user.role == 'trainer' %}
+            <a href="#">Documents Review</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+    <div class="container">
+        <div class="card">
+            <div class="welcome-section">
+                <h2>Welcome to Pet Haven Dashboard</h2>
+                <p class="user-desc">Hello, {{ user.name }}! You are logged in as a {{ user.role }}.</p>
+            </div>
+            <div class="metrics">
+                <div class="metric">
+                    <h3>Active Users</h3>
+                    <p>350</p>
+                </div>
+                <div class="metric">
+                    <h3>Pending Documents</h3>
+                    <p>12</p>
+                </div>
+                <div class="metric">
+                    <h3>Service Providers</h3>
+                    <p>45</p>
+                </div>
+            </div>
+            <div class="features">
+                <div class="feature-card">
+                    <img src="https://m.media-amazon.com/images/I/61S1qj2omnL.jpg" alt="Available Pets">
+                    <div class="feature-content">
+                        <h3>View Available Pets</h3>
+                        <p>Explore our variety of adorable pets waiting for a home.</p>
+                        <a href="#" class="btn btn-primary">Explore Now</a>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <img src="https://doglovespoint.com/wp-content/uploads/2024/08/when-a-dog-groomer-transforms-your-pets-look-instantly-1-1024x683.jpg" alt="Grooming Services">
+                    <div class="feature-content">
+                        <h3>Book Grooming Services</h3>
+                        <p>Schedule a grooming session for your beloved pet.</p>
+                        <a href="#" class="btn btn-primary">Book Now</a>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <img src="https://static.toiimg.com/thumb/msid-50612730,imgsize-61438,width-400,resizemode-4/50612730.jpg" alt="Competitions">
+                    <div class="feature-content">
+                        <h3>Participate in Competitions</h3>
+                        <p>Join exciting competitions with your furry friends.</p>
+                        <a href="#" class="btn btn-primary">Join Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="trainer-review-section">
+                <h3>Trainer Review</h3>
+                <p>Trainer John Doe has submitted a profile for review. Please evaluate the details and proceed accordingly.</p>
+                <div class="trainer-buttons">
+                    <a href="#" class="btn btn-primary">Accept</a>
+                    <a href="#" class="btn btn-danger">Reject</a>
+                    <a href="#" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+            <div class="logout-container">
+                <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const container = document.querySelector(".container");
+            const isSidebarVisible = sidebar.style.left === "0px";
+            sidebar.style.left = isSidebarVisible ? "-250px" : "0px";
+            container.style.marginLeft = isSidebarVisible ? "0" : "250px";
+        }
+        document.getElementById('notificationIcon').addEventListener('click', function() {
+            const panel = document.getElementById('notificationsPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        // No need to mark notifications as read here
+
+        const socket = io();  // Connect to the SocketIO server
+
+    // Listen for new notifications
+    socket.on('new_notification', function(data) {
+        const notificationList = document.getElementById('notificationList');
+        const listItem = document.createElement('li');
+        listItem.className = 'notification-item';
+        listItem.innerHTML = `${data.message} <small>(${new Date(data.created_at).toLocaleString()})</small>`;
+        notificationList.insertBefore(listItem, notificationList.firstChild);  // Add new notifications at the top
+
+        // Update the unread count
+        const notificationCount = document.querySelector('.notification-count');
+        const currentCount = parseInt(notificationCount.textContent) || 0;
+        notificationCount.textContent = currentCount + 1;  // Increment the count
+    });
+
+    let offset = 3;  // Start fetching from the fourth notification
+
+    document.getElementById('loadMoreNotifications').addEventListener('click', function(event) {
+        event.preventDefault();  // Prevent the default link behavior
+
+        // Get the current list of notifications
+        const notificationList = document.getElementById('notificationList');
+        
+        // Fetch the next three notifications from the server
+        fetch(`/dashboard/all_notifications?offset=${offset}`)  // Pass the current offset
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();  // Expecting JSON response
+            })
+            .then(data => {
+                // Append the new notifications to the notification list
+                data.notifications.forEach(notification => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'notification-item';
+                    listItem.innerHTML = `${notification.message} <small>(${new Date(notification.created_at).toLocaleString()})</small>`;
+                    notificationList.appendChild(listItem);
+                });
+                
+                // Update the offset
+                offset += 3;  // Increase the offset by 3
+
+                // Optionally hide the "load more" link if no more notifications
+                if (data.notifications.length < 3) {
+                    document.getElementById('loadMoreNotifications').style.display = 'none';  // Hide if no more notifications
+                }
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    });
+    </script>
+</body>
+</html>

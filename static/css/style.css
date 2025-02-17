@@ -1,0 +1,197 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: url('https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?cs=srgb&dl=pexels-chevanon-1108099.jpg&fm=jpg') no-repeat center center/cover;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.295);
+  z-index: 1;
+}
+
+.card {
+  position: relative;
+  z-index: 2;
+  background: #effcdf8f;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.card h2 {
+  margin-bottom: 20px;
+  font-size: 1.8em;
+  color: #343434;
+}
+
+.card .tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card .tabs button {
+  flex: 1;
+  padding: 10px;
+  font-size: 1em;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+.card .tabs .active {
+  color: #fff;
+  background-color: #0f7e0d;
+  border-radius: 5px;
+  border: none;
+}
+
+.card .form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.card .form-group label {
+  display: block;
+  font-size: 0.9em;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.card .form-group select,
+.card .form-group input {
+  width: 100%;
+  padding: 8px;
+  font-size: 0.9em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.remember-me-checkbox input[type="checkbox"] {
+  transform: scale(0.5); 
+  margin-right: 5px; 
+}
+
+.remember-forgot {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.remember-forgot .forgot-password {
+  margin-left: auto;
+}
+.card .form-group a {
+  font-size: 0.9em;
+  color: #f33321;
+  text-decoration: none;
+}
+
+.card .form-group a:hover {
+  text-decoration: underline;
+}
+
+.card .submit {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  background: #0f7e0d;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.card .submit:hover {
+  background: #45a049;
+}
+
+.footer {
+  margin-top: 15px;
+  font-size: 0.6em;
+  color: #4b4a4a;
+}
+
+.remember-me-checkbox {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 2px;
+}
+
+.checkbox {
+  margin-bottom: 6px;
+}
+
+
+/* Flash Message Styles */
+.flash-message {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  list-style: none;
+  text-align: center;
+  font-size: 1.1em;
+  width: 100%;
+}
+
+.flash-message.danger {
+  background-color: #f44336; /* Red */
+  color: white;
+  border: 1px solid #d32f2f;
+}
+
+.flash-message.success {
+  background-color: #4CAF50; /* Green */
+  color: white;
+  border: 1px solid #388e3c;
+}
+
+.flash-message.info {
+  background-color: #2196F3; /* Blue */
+  color: white;
+  border: 1px solid #1976d2;
+}
+
+.flash-message.warning {
+  background-color: #ff9800; /* Orange */
+  color: white;
+  border: 1px solid #f57c00;
+}
+
+/* Flash Message Container */
+.card ul {
+  padding: 0;
+  margin: 0;
+}
+
+/* Optional: Adjust position of flash messages */
+.card ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  text-align: center;
+}

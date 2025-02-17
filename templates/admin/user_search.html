@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], select {
+            width: 200px;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        input[type="submit"] {
+            margin-top: 10px;
+            padding: 5px 10px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search for Users</h1>
+    <form method="POST">
+        <input type="text" name="email" placeholder="Enter email" required>
+        <input type="submit" value="Search">
+    </form>
+
+    {% if error_message %}
+        <p class="error">{{ error_message }}</p>
+    {% endif %}
+
+    {% if users %}
+        <h2>Search Results:</h2>
+        <ul>
+            {% for user in users %}
+                <li>
+                    <form method="POST" action="{{ url_for('update_user', user_id=user.id) }}">
+                        <label for="name-{{ user.id }}">Name:</label>
+                        <input type="text" id="name-{{ user.id }}" name="name" value="{{ user.name }}" required><br>
+                        <label for="email-{{ user.id }}">Email:</label>
+                        <input type="text" id="email-{{ user.id }}" value="{{ user.email }}" disabled><br>
+                        <label for="mobile_number-{{ user.id }}">Mobile Number:</label>
+                        <input type="text" id="mobile_number-{{ user.id }}" name="mobile_number" value="{{ user.mobile_number }}"><br>
+                        <label for="role-{{ user.id }}">Role:</label>
+                        <select id="role-{{ user.id }}" name="role">
+                            <option value="customer" {% if user.role == 'customer' %}selected{% endif %}>Customer </option>
+                            <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                            <option value="trainer" {% if user.role == 'trainer' %}selected{% endif %}>Trainer</option>
+                        </select><br>
+                        <input type="submit" value="Update">
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No users found.</p>
+    {% endif %}
+</body>
+</html>

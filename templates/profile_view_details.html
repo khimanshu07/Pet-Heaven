@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container">
+    <div class="card">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="welcome-section">
+            <h2>Trainer Profile</h2>
+        </div>
+
+        <div class="profile-header">
+            <img src="{{ url_for('static', filename=trainer.user.profile_picture or 'images/profile_pictures/default_avatar.png') }}" 
+                 alt="Profile Picture" 
+                 class="profile-picture">
+        </div>
+        
+        <strong>Information</strong>
+        <table class="info-table">
+            <tbody>
+                <tr>
+                    <th>Name</th>
+                    <td>{{ trainer.user.name }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ trainer.user.email }}</td>
+                </tr>
+                <tr>
+                    <th>Mobile Number</th>
+                    <td>{{ trainer.user.mobile_number }}</td>
+                </tr>
+                <tr>
+                    <th>Role</th>
+                    <td>{{ trainer.user.role }}</td>
+                </tr>
+                <tr>
+                    <th>Created At</th>
+                    <td>{{ trainer.user.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                </tr>
+                {% if trainer.specialization %}
+                <tr>
+                    <th>Specialization</th>
+                    <td>{{ trainer.specialization }}</td>
+                </tr>
+                {% endif %}
+                {% if trainer.experience %}
+                <tr>
+                    <th>Experience</th>
+                    <td>{{ trainer.experience }} years</td>
+                </tr>
+                {% endif %}
+                {% if trainer.bio %}
+                <tr>
+                    <th>Bio</th>
+                    <td>{{ trainer.bio }}</td>
+                </tr>
+                {% endif %}
+                
+                <!-- Government ID Section -->
+                <tr>
+                    <th>Aadhaar Number</th>
+                    <td>
+                        {% if trainer.aadhaar_image_path %}
+                            <a href="{{ url_for('static', filename=trainer.aadhaar_image_path) }}" target="_blank">
+                                View Aadhaar Document
+                            </a>
+                        {% else %}
+                            <span>No Aadhaar Document Available</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>PAN Number</th>
+                    <td>
+                        {% if trainer.pan_card_image_path %}
+                            <a href="{{ url_for('static', filename=trainer.pan_card_image_path) }}" target="_blank">
+                                View PAN Document
+                            </a>
+                        {% else %}
+                            <span>No PAN Document Available</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                {% if trainer.certifications %}
+                <tr>
+                    <th>Certifications</th>
+                    <td>
+                        <ul>
+                            {% for cert in trainer.certifications %}
+                                <li>
+                                    <a href="{{ url_for('static', filename=cert.image_path) }}" target="_blank">{{ cert.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+                {% endif %}
+                
+                {% if trainer.trainer_services %}
+                <tr>
+                    <th>Services</th>
+                    <td>
+                        <ul>
+                            {% for trainer_service in trainer.trainer_services %}
+                                <li>
+                                    {{ trainer_service.service.name }} - Rs {{ trainer_service.price }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <!-- Accept and Reject Buttons -->
+        <form method="POST" action="{{ url_for('update_trainer_status') }}">
+            <input type="hidden" name="trainer_id" value="{{ trainer.id }}">
+            <button type="submit" name="action" value="accept" class="btn btn-success">Accept</button>
+            <button type="submit" name="action" value="reject" class="btn btn-danger">Reject</button>
+        </form>
+    </div>
+</main>
+{% endblock %}

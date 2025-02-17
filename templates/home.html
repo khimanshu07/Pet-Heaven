@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pet Heaven</title>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header d-flex justify-content-between align-items-center p-3">
+      <a class="navbar-brand text-white d-flex align-items-center" href="{{ url_for('home') }}">
+        <img
+          src="{{ url_for('static', filename='images/logo.png') }}"
+          alt="Logo"
+          width="30"
+          height="30"
+          class="d-inline-block me-2"
+        />
+        Pet Heaven
+      </a>
+      <nav>
+        <ul class="nav">
+          <li class="nav-item">
+            <a href="{{ url_for('login') }}" class="nav-link text-white">Login</a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('register') }}" class="nav-link text-white">Register</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main text-center py-5">
+      <h1 class="heading mb-4">Welcome to Pet Heaven</h1>
+      <p class="text mx-auto px-5">
+        Explore our Pet Shop and attend exciting Events that bring pets and pet lovers together, and enjoy top-notch Services including grooming, training, and health checkups—all to ensure your furry friends live their happiest and healthiest lives!
+      </p>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer text-center py-3">
+      <p class="mb-0">&copy; 2025. Copyright by Pet Heaven</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

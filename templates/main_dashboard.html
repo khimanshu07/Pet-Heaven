@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="card">
+            <div class="welcome-section">
+                <h2>Welcome to Pet Haven</h2>
+                {% if current_user.is_authenticated %}
+                    <p class="user-desc">Hello, {{ current_user.name }}! You are logged in as a {{ current_user.role }}.</p>
+                </div>
+                    {% if user.role == 'admin' %}
+                    <div class="metrics">
+                        <div class="metric">
+                            <h3>Active Users</h3>
+                            <p>{{active_users}}</p>
+                        </div>
+                        <div class="metric">
+                            <h3>Pending Documents</h3>
+                            <p>{{pending}}</p>
+                        </div>
+                        <div class="metric">
+                            <h3>Service Providers</h3>
+                            <p>{{service_providers}}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            
+            <div class="features">
+                <div class="feature-card">
+                    <img src="https://m.media-amazon.com/images/I/61S1qj2omnL.jpg" alt="Available Pets">
+                    <div class="feature-content">
+                        <h3>View Available Pets</h3>
+                        <p>Explore our variety of adorable pets waiting for a home.</p>
+                        <a href="#" class="btn btn-primary">Explore Now</a>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <img src="https://doglovespoint.com/wp-content/uploads/2024/08/when-a-dog-groomer-transforms-your-pets-look-instantly-1-1024x683.jpg" alt="Grooming Services">
+                    <div class="feature-content">
+                        <h3>Book Grooming Services</h3>
+                        <p>Schedule a grooming session for your beloved pet.</p>
+                        <a href="{{ url_for('services') }}" class="btn btn-primary">Book Now</a>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <img src="https://static.toiimg.com/thumb/msid-50612730,imgsize-61438,width-400,resizemode-4/50612730.jpg" alt="Competitions">
+                    <div class="feature-content">
+                        <h3>Participate in Competitions</h3>
+                        <p>Join exciting competitions with your furry friends.</p>
+                        <a href="#" class="btn btn-primary">Join Now</a>
+                    </div>
+                </div>
+            </div>
+            {% if user.role == 'admin' %}
+            <!-- trainer_reviews.html -->
+            <div class="trainer-review-section" id="trainerReviewSection">
+                <h3>Trainer Review Submissions</h3>
+                <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+                    {% if trainers %}
+                        <tr class="custom-row-height">
+                            <th>Trainer</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                        {% for trainer in trainers %}
+                        <tr class="custom-row-height">
+                            <td>{{ trainer.user.name }}</td>  <!-- Display trainer's full name -->
+                            <td>{{ trainer.user.email }}</td>  <!-- Display trainer's email -->
+                            <td>
+                                <a href="{{ url_for('view_profile', trainer_id=trainer.id) }}" class="btn-custom">View Details</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="3">No Trainer Reviews found.</td>  <!-- Adjusted colspan to match the number of columns -->
+                        </tr>
+                    {% endif %}
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+
+    {% endblock %}

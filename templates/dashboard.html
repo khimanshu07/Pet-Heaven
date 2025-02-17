@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="card">
+        <h2>Welcome to the Pet Haven Dashboard!</h2>
+        <p>Hello, {{ user.name }}! You are logged in as a {{ user.role }}.</p>
+
+        <!-- Service Provider features section -->
+        {% if user.role == 'trainer' %}
+            <h2>Service Provider Features</h2>
+            <p>As a Service Provider, you can:</p>
+            <ul>
+                <li><a href="#">Manage your services</a></li>
+                <li><a href="#">View bookings</a></li>
+                <li><a href="#">Access customer feedback</a></li>
+                <li><a href="#">Update your profile</a></li>
+            </ul>
+
+        {% elif user.role == 'admin' %}
+            <h2>Admin Features</h2>
+            <p>As an Admin, you can:</p>
+            <ul>
+                <li><a href="#">Manage all users</a></li>
+                <li><a href="#">View all bookings</a></li>
+                <li><a href="#">Generate reports</a></li>
+                <li><a href="#">Manage site settings</a></li>
+            </ul>
+
+        {% endif %}
+
+        <!-- Common features available to all users -->
+        <h2>Common Features</h2>
+        <p>Here are some features available to all users:</p>
+        <ul>
+            <li><a href="#">View available pets</a></li>
+            <li><a href="#">Book grooming services</a></li>
+            <li><a href="#">Participate in competitions</a></li>
+        </ul>
+
+        <!-- Logout button -->
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+
+    <!-- Optional: Link to external JavaScript file -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

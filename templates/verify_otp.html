@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/otp.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>
+            {% if session['verification_type'] == 'login' %}
+                Verify Login OTP
+            {% else %}
+                Verify Registration OTP
+            {% endif %}
+        </h2>
+
+        <p>
+            An OTP has been sent to <strong>{{ masked_email }}</strong>. Please enter it below.
+        </p>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div style="color: {{ 'red' if category == 'error' else 'green' }}; margin-bottom: 10px;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- OTP Form -->
+        <form method="POST" action="{{ url_for('verify_otp') }}">
+            <label for="otp">Enter OTP:</label>
+            <input
+                type="text"
+                name="otp"
+                id="otp"
+                placeholder="6-digit OTP"
+                required
+                maxlength="6"
+                pattern="[0-9]{6}"
+            />
+            <button type="submit">Verify OTP</button>
+        </form>
+
+        <!-- Countdown and Resend OTP -->
+        <div id="countdown"></div>
+        <div>
+            <a href="{{ url_for('resend_otp') }}" id="resendLink">
+                Resend OTP
+            </a>
+        </div>
+    </div>
+
+    <!-- JavaScript for Countdown   -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let countdownElement = document.getElementById("countdown");
+            let resendLink = document.getElementById("resendLink");
+            let timeLeft = 30; // Countdown duration in seconds
+
+            function updateCountdown() {
+                if (timeLeft > 0) {
+                    countdownElement.textContent = `Resend OTP in ${timeLeft--} seconds`;
+                } else {
+                    countdownElement.textContent = "";
+                    resendLink.style.pointerEvents = "auto";
+                    resendLink.style.cursor = "pointer";
+                }
+            }
+
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+        });
+    </script> 
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .form-group input.invalid,
+        .form-group select.invalid {
+            border-color: red;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 id="welcome-heading">Welcome</h2>
+        <div class="tabs">
+            <button onclick="location.href='{{ url_for('login') }}'">LOGIN</button>
+            <button class="active" onclick="location.reload()">REGISTER</button>
+        </div>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <li class="flash-message {{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('register') }}" id="registration-form">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                <span class="error" id="name-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="role">Select Role</label>
+                <select id="role" name="role" required>
+                    <option value="customer">Customer</option>
+                    <option value="trainer">Trainer</option>
+                </select>
+                <span class="error" id="role-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="mobile">Mobile No.</label>
+                <input type="text" id="mobile" name="mobile" placeholder="Enter your mobile number" required>
+                <span class="error" id="mobile-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <span class="error" id="email-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="********" required>
+                <span class="error" id="password-error"></span>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm_password" placeholder="********" required>
+                <span class="error" id="confirm-password-error"></span>
+            </div>
+            <button type="submit" class="submit">Register</button>
+        </form>
+        <div class="footer">
+            Protected by reCAPTCHA and subject to the Privacy Policy and Terms of Service
+        </div>
+    </div>
+    <script>
+        document.getElementById('registration-form').addEventListener('submit', function (e) {
+            let valid = true;
+
+            // Clear previous errors
+            document.querySelectorAll('.error').forEach(error => error.textContent = '');
+            document.querySelectorAll('input, select').forEach(input => input.classList.remove('invalid'));
+
+            // Show the heading
+            const welcomeHeading = document.getElementById('welcome-heading');
+            welcomeHeading.classList.remove('hidden');
+
+            // Full Name validation
+            const name = document.getElementById('name');
+            if (name.value.trim() === '' || !/^[A-Za-z\s]+$/.test(name.value)) {
+                valid = false;
+                name.classList.add('invalid');
+                document.getElementById('name-error').textContent = 'Please enter a valid full name.';
+            }
+
+            // Role validation
+            const role = document.getElementById('role');
+            if (role.value === '') {
+                valid = false;
+                role.classList.add('invalid');
+                document.getElementById('role-error').textContent = 'Please select a role.';
+            }
+
+            // Mobile validation
+            const mobile = document.getElementById('mobile');
+            if (!/^\d{10}$/.test(mobile.value)) {
+                valid = false;
+                mobile.classList.add('invalid');
+                document.getElementById('mobile-error').textContent = 'Please enter a valid 10-digit mobile number.';
+            }
+
+            // Email validation
+            const email = document.getElementById('email');
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+                valid = false;
+                email.classList.add('invalid');
+                document.getElementById('email-error').textContent = 'Please enter a valid email address.';
+            }
+
+            // Password validation
+            const password = document.getElementById('password');
+            if (password.value.length < 8) {
+                valid = false;
+                password.classList.add('invalid');
+                document.getElementById('password-error').textContent = 'Password must be at least 8 characters long.';
+            }
+
+            // Confirm password validation
+            const confirmPassword = document.getElementById('confirm-password');
+            if (confirmPassword.value !== password.value) {
+                valid = false;
+                confirmPassword.classList.add('invalid');
+                document.getElementById('confirm-password-error').textContent = 'Passwords do not match.';
+            }
+
+            // If validation fails, remove the welcome heading and prevent form submission
+            if (!valid) {
+                welcomeHeading.classList.add('hidden');
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
